@@ -9,7 +9,7 @@ interface MusicPlayer {
     val isPlaying: StateFlow<Boolean>
     val currentPosition: StateFlow<Long>
 
-    fun play(track: AudioTrack)
+    fun play(trackId: String)
     fun pause()
     fun resume()
     fun seekTo(position: Long)
