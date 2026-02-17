@@ -1,13 +1,17 @@
 package io.sonicwave.media.domain.di
 
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import io.sonicwave.media.domain.implementations.Media3MusicPlayer
 import io.sonicwave.media.domain.interfaces.MusicPlayer
+import jakarta.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 internal abstract class MediaModule {
 
-    // Używamy @Singleton, ponieważ stan odtwarzacza musi być
-    // jeden i ten sam dla całej aplikacji (współdzielony między ekranami i serwisem).
     @Binds
     @Singleton
     abstract fun bindMusicPlayer(

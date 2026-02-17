@@ -1,6 +1,7 @@
 package io.sonicwave.media.domain.interfaces
 
-import android.media.AudioTrack
+//import android.media.AudioTrack
+import io.sonicwave.media.model.AudioTrack
 import kotlinx.coroutines.flow.StateFlow
 
 interface MusicPlayer {
