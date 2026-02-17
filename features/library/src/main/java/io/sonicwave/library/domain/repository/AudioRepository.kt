@@ -1,9 +1,9 @@
 package io.sonicwave.library.domain.repository
 
 import io.sonicwave.media.model.AudioTrack
+import kotlinx.coroutines.flow.Flow
 
-//import io.sonicwave.library.domain.model.AudioTrack
 
 interface AudioRepository {
-    suspend fun getAudioFiles(): List<AudioTrack>
+    fun getAudioFiles(): Flow<List<AudioTrack>>
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="permission_neded_info">To display songs, the application requires access to audio files.</string>
+    <string name="grant_permission">Grant permission</string>
+    <string name="your_library">Your Library</string>
+    <string name="no_audio_files_found">No audio files found</string>
+</resources>
