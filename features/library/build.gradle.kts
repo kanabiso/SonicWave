@@ -42,11 +42,14 @@ android {
 dependencies {
     // modules
     implementation(project(":core:media"))
+    implementation(project(":core:common"))
 
     // hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+
+    implementation(libs.kotlinx.collections.immutable)
 
     // compose
     implementation(libs.androidx.core.ktx)
