@@ -43,6 +43,7 @@ dependencies {
     // modules
     implementation(project(":core:media"))
     implementation(project(":core:common"))
+    implementation(project(":core:permissions"))
 
     // hilt
     implementation(libs.hilt.android)
