@@ -5,7 +5,8 @@ import kotlinx.collections.immutable.persistentListOf
 
 data class LibraryUiState(
     val audioFiles: ImmutableList<TrackUiModel> = persistentListOf(),
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null
 )
 
 data class TrackUiModel(

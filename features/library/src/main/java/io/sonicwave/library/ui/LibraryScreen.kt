@@ -71,6 +71,11 @@ fun LibraryScreen(
                     Text(stringResource(R.string.no_audio_files_found))
                 }
             }
+            uiState.errorMessage != null-> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(uiState.errorMessage)
+                }
+            }
             else -> {
                 if (isListLayout) {
                     TrackList(uiState.audioFiles) { onEvent(LibraryUiEvent.OnTrackClick(it.id)) }

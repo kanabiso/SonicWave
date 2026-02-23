@@ -11,6 +11,7 @@ import jakarta.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -30,6 +31,9 @@ class LibraryViewModel @Inject constructor(
         }
         .onStart {
             emit(LibraryUiState(isLoading = true))
+        }
+        .catch {
+            emit(LibraryUiState(isLoading = false, errorMessage = it.message))
         }
         .stateIn(
             scope = viewModelScope,
