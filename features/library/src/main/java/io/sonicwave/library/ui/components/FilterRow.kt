@@ -15,7 +15,6 @@ import io.sonicwave.library.R
 fun FilterRow(
     isListLayout: Boolean,
     onFilterClick: () -> Unit,
-    onSortClick: () -> Unit,
     onLayoutClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -25,7 +24,7 @@ fun FilterRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(
-            onClick = { }
+            onClick = { onFilterClick() }
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.filter_list),
