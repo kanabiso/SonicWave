@@ -1,5 +1,7 @@
 package io.sonicwave.library.ui
 
+import io.sonicwave.library.domain.model.SortOrder
+
 data class LibraryUiState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
@@ -18,10 +20,3 @@ data class TrackUiModel(
     val isPlaying: Boolean = false,
     val isSelected: Boolean = false
 )
-
-enum class SortOrder {
-    TITLE,
-    AUTHOR,
-    DURATION,
-    LAST_ADDED
-}

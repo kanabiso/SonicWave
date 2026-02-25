@@ -21,8 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.sonicwave.library.R
+import io.sonicwave.library.domain.model.SortOrder
 import io.sonicwave.library.ui.LibraryUiEvent
-import io.sonicwave.library.ui.SortOrder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

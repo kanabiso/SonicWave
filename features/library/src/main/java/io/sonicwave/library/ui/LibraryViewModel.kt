@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.sonicwave.common.utils.formatAsDuration
 import io.sonicwave.library.domain.usecase.GetAudioTracksUseCase
+import io.sonicwave.library.domain.usecase.GetSortedAudioTracksUseCase
 import io.sonicwave.library.domain.usecase.PlayTrackUseCase
 import io.sonicwave.media.model.AudioTrack
 import jakarta.inject.Inject
@@ -16,7 +17,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -25,31 +27,26 @@ import kotlinx.coroutines.flow.update
 class LibraryViewModel @Inject constructor(
     private val getAudioTracksUseCase: GetAudioTracksUseCase,
     private val playTrackUseCase: PlayTrackUseCase,
+    private val getSortedAudioTracksUseCase: GetSortedAudioTracksUseCase
 ) : ViewModel() {
 
     // UI state
     private val _uiState = MutableStateFlow(LibraryUiState(isLoading = true))
     val uiState: StateFlow<LibraryUiState> = _uiState.asStateFlow()
 
+    private val sortOrderFlow = _uiState.map { it.sortOrder }.distinctUntilChanged()
+    private val isDescFlow = _uiState.map { it.isDesc }.distinctUntilChanged()
+
     // Audio tracks from domain
-    val audioTracks: StateFlow<ImmutableList<TrackUiModel>> = combine(
-        getAudioTracksUseCase(),
-        _uiState
-    ) { tracks: List<AudioTrack>, state: LibraryUiState ->
-
-        // Sort logic
-        val sortedTracks = when (state.sortOrder) {
-            SortOrder.TITLE -> if (state.isDesc) tracks.sortedByDescending { it.title } else tracks.sortedBy { it.title }
-            SortOrder.AUTHOR -> if (state.isDesc) tracks.sortedByDescending { it.artist } else tracks.sortedBy { it.artist }
-            SortOrder.DURATION -> if (state.isDesc) tracks.sortedByDescending { it.durationMs } else tracks.sortedBy { it.durationMs }
-            SortOrder.LAST_ADDED -> if (state.isDesc) tracks.sortedByDescending { it.dateAdded } else tracks.sortedBy { it.dateAdded }
+    val audioTracks: StateFlow<ImmutableList<TrackUiModel>> = getSortedAudioTracksUseCase(
+        sortOrderFlow = sortOrderFlow,
+        isDescFlow = isDescFlow
+    )
+        .map { sortedTracks ->
+            sortedTracks
+                .map { it.toUiModel(isPlaying = false) }
+                .toImmutableList()
         }
-
-        // mapper
-        sortedTracks
-            .map { it.toUiModel(isPlaying = false) }
-            .toImmutableList()
-    }
         .onStart {
             _uiState.update { it.copy(isLoading = false) }
         }
