@@ -1,12 +1,11 @@
 package io.sonicwave.library.ui
 
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
-
 data class LibraryUiState(
-    val audioFiles: ImmutableList<TrackUiModel> = persistentListOf(),
     val isLoading: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val sortOrder: SortOrder = SortOrder.TITLE,
+    val isDesc: Boolean = false,
+    val isAlbumGroup: Boolean = false
 )
 
 data class TrackUiModel(
@@ -19,3 +18,10 @@ data class TrackUiModel(
     val isPlaying: Boolean = false,
     val isSelected: Boolean = false
 )
+
+enum class SortOrder {
+    TITLE,
+    AUTHOR,
+    DURATION,
+    LAST_ADDED
+}

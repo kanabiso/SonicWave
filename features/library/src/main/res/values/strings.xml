@@ -5,4 +5,10 @@
     <string name="your_library">Your Library</string>
     <string name="no_audio_files_found">No audio files found</string>
     <string name="open_settings">Open Settings</string>
+    <string name="sort_by_alpha">Sort by alpha</string>
+    <string name="sort_by_duration">Sort by duration</string>
+    <string name="sort_your_library">Sort your library</string>
+    <string name="sort_by_title">Sort by title</string>
+    <string name="sort_by_author">Sort by author</string>
+    <string name="sort_by_last_added">Sort by last added</string>
 </resources>

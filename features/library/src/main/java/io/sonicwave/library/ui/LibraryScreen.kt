@@ -4,11 +4,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -21,6 +28,7 @@ import io.sonicwave.library.R
 import io.sonicwave.library.ui.components.FilterRow
 import io.sonicwave.library.ui.components.LibraryTitle
 import io.sonicwave.library.ui.components.RequireAudioPermission
+import io.sonicwave.library.ui.components.SortSheet
 import io.sonicwave.library.ui.components.TrackGrid
 import io.sonicwave.library.ui.components.TrackList
 
@@ -30,23 +38,38 @@ fun LibraryScreenRoot(
     viewModel: LibraryViewModel = hiltViewModel(),
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
+    val audioFiles = viewModel.audioTracks.collectAsStateWithLifecycle().value
 
     RequireAudioPermission {
         LibraryScreen(
             uiState = uiState,
+            audioFiles = audioFiles,
             onEvent = viewModel::onEvent,
             modifier = modifier
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
     modifier: Modifier = Modifier,
+    audioFiles: List<TrackUiModel>,
     uiState: LibraryUiState,
     onEvent: (LibraryUiEvent) -> Unit,
 ) {
     var isListLayout by rememberSaveable { mutableStateOf(true) }
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    var showBottomSheet by remember { mutableStateOf(false) }
+
+    val listState = rememberLazyListState()
+    val gridState = rememberLazyGridState()
+
+    LaunchedEffect(uiState.sortOrder, uiState.isDesc) {
+        listState.scrollToItem(0)
+        gridState.scrollToItem(0)
+    }
 
     Column(
         modifier = modifier.padding(16.dp)
@@ -55,8 +78,7 @@ fun LibraryScreen(
 
         FilterRow(
             isListLayout = isListLayout,
-            onFilterClick = { },
-            onSortClick = { },
+            onFilterClick = { showBottomSheet = true },
             onLayoutClick = { isListLayout = !isListLayout }
         )
 
@@ -66,23 +88,40 @@ fun LibraryScreen(
                     CircularProgressIndicator()
                 }
             }
-            uiState.audioFiles.isEmpty() -> {
+
+            audioFiles.isEmpty() -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(stringResource(R.string.no_audio_files_found))
                 }
             }
-            uiState.errorMessage != null-> {
+
+            uiState.errorMessage != null -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(uiState.errorMessage)
                 }
             }
             else -> {
                 if (isListLayout) {
-                    TrackList(uiState.audioFiles) { onEvent(LibraryUiEvent.OnTrackClick(it.id)) }
+                    TrackList(audioFiles = audioFiles, listState = listState) {
+                       onEvent(LibraryUiEvent.OnTrackClick(it.id))
+                    }
                 } else {
-                    TrackGrid(uiState.audioFiles) { onEvent(LibraryUiEvent.OnTrackClick(it.id)) }
+                    TrackGrid(audioFiles = audioFiles, gridState = gridState) {
+                        onEvent(LibraryUiEvent.OnTrackClick(it.id))
+                    }
                 }
             }
+        }
+        if (showBottomSheet) {
+            SortSheet(
+                sheetState = sheetState,
+                onSheetOpen = { showBottomSheet = it },
+                sortOrder = uiState.sortOrder,
+                isDesc = uiState.isDesc,
+                isAlbumGroup = uiState.isAlbumGroup,
+                scope = scope,
+                onEvent = onEvent
+            )
         }
     }
 }
