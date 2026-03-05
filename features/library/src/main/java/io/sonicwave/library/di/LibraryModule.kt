@@ -19,6 +19,6 @@ internal object LibraryModule {
     fun provideAudioRepository(
         @ApplicationContext context: Context
     ): AudioRepository {
-        return MediaStoreAudioRepositoryImpl(context.contentResolver)
+        return MediaStoreAudioRepositoryImpl(context)
     }
 }

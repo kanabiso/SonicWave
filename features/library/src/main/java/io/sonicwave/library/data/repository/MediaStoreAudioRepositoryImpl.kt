@@ -1,7 +1,10 @@
 package io.sonicwave.library.data.repository
 
 import android.content.ContentResolver
+import android.content.ContentUris
+import android.content.Context
 import android.database.ContentObserver
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
@@ -14,10 +17,37 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
+import androidx.core.net.toUri
 
 class MediaStoreAudioRepositoryImpl @Inject constructor(
-    private val contentResolver: ContentResolver
+    private val context: Context
 ) : AudioRepository {
+    private val contentResolver = context.contentResolver
+
+    override suspend fun getAlbumArtData(uriString: String): ByteArray? = withContext(Dispatchers.IO) {
+        val retriever = android.media.MediaMetadataRetriever()
+        return@withContext try {
+            retriever.setDataSource(context, Uri.parse(uriString))
+            retriever.embeddedPicture
+        } catch (e: Exception) {
+            null
+        } finally {
+            retriever.release()
+        }
+    }
+
+    override suspend fun getAlbumArtUri(albumId: Long): Uri? = withContext(Dispatchers.IO) {
+        val artworkUri = "content://media/external/audio/albumart".toUri()
+        val uri = ContentUris.withAppendedId(artworkUri, albumId)
+
+        return@withContext try {
+            contentResolver.openInputStream(uri)?.close()
+            uri
+        } catch (e: Exception) {
+            null
+        }
+    }
 
     override fun getAudioFiles(): Flow<List<AudioTrack>> = callbackFlow {
         val observer = object : ContentObserver(Handler(Looper.getMainLooper())) {
@@ -50,7 +80,8 @@ class MediaStoreAudioRepositoryImpl @Inject constructor(
             MediaStore.Audio.Media.YEAR,
             MediaStore.Audio.Media.DATE_ADDED,
             MediaStore.Audio.Media.ARTIST,
-            MediaStore.Audio.Media.DURATION
+            MediaStore.Audio.Media.DURATION,
+            MediaStore.Audio.Media.DATA
         )
         val selection = "${MediaStore.Audio.Media.IS_MUSIC} != 0"
         val sortOrder = "${MediaStore.Audio.Media.TITLE} ASC"
