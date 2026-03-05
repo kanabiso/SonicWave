@@ -1,5 +1,6 @@
 package io.sonicwave.library.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.sonicwave.library.R
+import io.sonicwave.library.ui.components.AlbumGrid
 import io.sonicwave.library.ui.components.FilterRow
 import io.sonicwave.library.ui.components.LibraryTitle
 import io.sonicwave.library.ui.components.RequireAudioPermission
@@ -38,12 +40,12 @@ fun LibraryScreenRoot(
     viewModel: LibraryViewModel = hiltViewModel(),
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
-    val audioFiles = viewModel.audioTracks.collectAsStateWithLifecycle().value
+    val libraryItems = viewModel.libraryItems.collectAsStateWithLifecycle().value
 
     RequireAudioPermission {
         LibraryScreen(
             uiState = uiState,
-            audioFiles = audioFiles,
+            libraryItems = libraryItems,
             onEvent = viewModel::onEvent,
             modifier = modifier
         )
@@ -54,11 +56,12 @@ fun LibraryScreenRoot(
 @Composable
 fun LibraryScreen(
     modifier: Modifier = Modifier,
-    audioFiles: List<TrackUiModel>,
+    libraryItems: List<LibraryItemUiModel>,
     uiState: LibraryUiState,
     onEvent: (LibraryUiEvent) -> Unit,
 ) {
     var isListLayout by rememberSaveable { mutableStateOf(true) }
+
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -78,40 +81,59 @@ fun LibraryScreen(
 
         FilterRow(
             isListLayout = isListLayout,
+            isAlbumGroup = uiState.isAlbumGroup,
             onFilterClick = { showBottomSheet = true },
-            onLayoutClick = { isListLayout = !isListLayout }
+            onLayoutClick = { isListLayout = !isListLayout },
+            onAlbumClick = {
+                onEvent(LibraryUiEvent.OnAlbumIconClick) }
         )
 
-        when {
-            uiState.isLoading -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+            when {
+                uiState.isLoading -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                }
+
+                libraryItems.isEmpty() -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(stringResource(R.string.no_audio_files_found))
+                    }
+                }
+
+                uiState.errorMessage != null -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(uiState.errorMessage)
+                    }
+                }
+                else -> {
+                    if (uiState.isAlbumGroup) {
+
+                        val albums = libraryItems.filterIsInstance<AlbumUiModel>()
+
+                        if (isListLayout) {
+
+                        } else {
+                            AlbumGrid(albums = albums, gridState = gridState) { album ->
+                            }
+                        }
+
+                    } else {
+                        val tracks = libraryItems.filterIsInstance<TrackUiModel>()
+
+                        if (isListLayout) {
+                            TrackList(audioFiles = tracks, listState = listState) { track ->
+                                onEvent(LibraryUiEvent.OnTrackClick(track.id))
+                            }
+                        } else {
+                            TrackGrid(audioFiles = tracks, gridState = gridState) { track ->
+                                onEvent(LibraryUiEvent.OnTrackClick(track.id))
+                            }
+                        }
+                    }
                 }
             }
 
-            audioFiles.isEmpty() -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(stringResource(R.string.no_audio_files_found))
-                }
-            }
-
-            uiState.errorMessage != null -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(uiState.errorMessage)
-                }
-            }
-            else -> {
-                if (isListLayout) {
-                    TrackList(audioFiles = audioFiles, listState = listState) {
-                       onEvent(LibraryUiEvent.OnTrackClick(it.id))
-                    }
-                } else {
-                    TrackGrid(audioFiles = audioFiles, gridState = gridState) {
-                        onEvent(LibraryUiEvent.OnTrackClick(it.id))
-                    }
-                }
-            }
-        }
         if (showBottomSheet) {
             SortSheet(
                 sheetState = sheetState,
