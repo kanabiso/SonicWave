@@ -17,7 +17,7 @@ class Media3MusicPlayer @Inject constructor() : MusicPlayer {
     private val _currentPosition = MutableStateFlow(0L)
     override val currentPosition: StateFlow<Long> = _currentPosition.asStateFlow()
 
-    override fun play(trackId: String) {
+    override fun play(trackId: Long) {
 
     }
 

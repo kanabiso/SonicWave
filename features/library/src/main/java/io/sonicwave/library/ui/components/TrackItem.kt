@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.sonicwave.library.R
@@ -48,7 +49,7 @@ fun TrackItem(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = track.title,
+                text = track.title ?: stringResource(R.string.unknown_track),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.bodyLarge
@@ -58,7 +59,7 @@ fun TrackItem(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = track.artist,
+                    text = track.artist ?: stringResource(R.string.unknown_artist),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.labelMedium,

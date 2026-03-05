@@ -19,13 +19,13 @@ fun Cursor.toAudioTrack(): AudioTrack {
     val id = getLong(idColumn)
 
     return AudioTrack(
-        id = id.toString(),
+        id = id,
         title = getString(titleColumn) ?: "Unknown Title",
         artist = getString(artistColumn) ?: "Unknown Artist",
         album = getString(albumColumn) ?: "Unknown Album",
         uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id).toString(),
         durationMs = getLong(durationColumn),
-        albumId = getLong(albumIdColumn).toString(),
+        albumId = getLong(albumIdColumn),
         track = getString(trackColumn) ?: "",
         year = getString(yearColumn) ?: "",
         dateAdded = getString(dateAddedColumn)
