@@ -23,7 +23,7 @@ data class TrackUiModel(
     val album: String?,
     val albumId: Long,
     val duration: String,
-    val coverUri: Uri?,
+    val coverUri: String,
     val isPlaying: Boolean = false,
     val isSelected: Boolean = false
 ) : LibraryItemUiModel
@@ -35,5 +35,5 @@ data class AlbumUiModel(
     val year: String? = null,
     val trackCount: Int?,
     val duration: String,
-    val coverUri: Uri?
+    val coverUri: String,
 ) : LibraryItemUiModel

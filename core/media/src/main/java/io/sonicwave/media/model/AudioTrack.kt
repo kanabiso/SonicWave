@@ -10,5 +10,6 @@ data class AudioTrack(
     val albumId: Long,
     val track: String?,
     val year: String?,
-    val dateAdded: String?
+    val dateAdded: String?,
+    val dataPath: String
 )

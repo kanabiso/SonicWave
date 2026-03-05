@@ -6,7 +6,7 @@ import jakarta.inject.Inject
 class PlayTrackUseCase @Inject constructor(
     private val musicPlayer: MusicPlayer
 ) {
-    operator fun invoke(trackId: String) {
+    operator fun invoke(trackId: Long) {
         musicPlayer.play(trackId)
     }
 }

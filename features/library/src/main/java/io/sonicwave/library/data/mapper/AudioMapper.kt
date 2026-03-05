@@ -15,6 +15,7 @@ fun Cursor.toAudioTrack(): AudioTrack {
     val trackColumn = getColumnIndexOrThrow(MediaStore.Audio.Media.TRACK)
     val yearColumn = getColumnIndexOrThrow(MediaStore.Audio.Media.YEAR)
     val dateAddedColumn = getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_ADDED)
+    val dataColumn = getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
 
     val id = getLong(idColumn)
 
@@ -28,6 +29,7 @@ fun Cursor.toAudioTrack(): AudioTrack {
         albumId = getLong(albumIdColumn),
         track = getString(trackColumn) ?: "",
         year = getString(yearColumn) ?: "",
-        dateAdded = getString(dateAddedColumn)
+        dateAdded = getString(dateAddedColumn),
+        dataPath = getString(dataColumn) ?: ""
     )
 }
