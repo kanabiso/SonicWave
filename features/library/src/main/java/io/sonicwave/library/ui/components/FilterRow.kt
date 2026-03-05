@@ -14,8 +14,10 @@ import io.sonicwave.library.R
 @Composable
 fun FilterRow(
     isListLayout: Boolean,
+    isAlbumGroup: Boolean,
     onFilterClick: () -> Unit,
     onLayoutClick: () -> Unit,
+    onAlbumClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -23,13 +25,23 @@ fun FilterRow(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        IconButton(
-            onClick = { onFilterClick() }
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.filter_list),
-                contentDescription = null
-            )
+        Row {
+            IconButton(
+                onClick = { onFilterClick() }
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.filter_list),
+                    contentDescription = null
+                )
+            }
+            IconButton(
+                onClick = { onAlbumClick() }
+            ) {
+                Icon(
+                    painter = painterResource(id = if (isAlbumGroup) R.drawable.filled_album_24 else R.drawable.album_24 ),
+                    contentDescription = null,
+                )
+            }
         }
         IconButton(
             onClick = { onLayoutClick() }

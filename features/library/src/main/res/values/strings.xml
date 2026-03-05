@@ -11,4 +11,9 @@
     <string name="sort_by_title">Sort by title</string>
     <string name="sort_by_author">Sort by author</string>
     <string name="sort_by_last_added">Sort by last added</string>
+    <string name="unknown_album">Unknown album</string>
+    <string name="unknown_artist">Unknown artist\n</string>
+    <string name="unknown_year">\????</string>
+    <string name="unknown_track">Unknown track\n</string>
+    <string name="album_cover">Album cover</string>
 </resources>
