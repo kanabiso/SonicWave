@@ -38,16 +38,17 @@ class LibraryViewModelTest {
     fun `should emit loading state initially and then map audio tracks successfully`() = runTest {
         //  ARRANGE
         val mockTrack = AudioTrack(
-            id = "1",
+            id = 1,
             title = "Bohemian Rhapsody",
             artist = "Queen",
             album = "A Night at the Opera",
             uri = "content://media/external/audio/media/1",
             durationMs = 354000L, // 5:54
-            albumId = "10",
+            albumId = 10,
             track = "1",
             year = "1975",
-            dateAdded = "2023-01-01"
+            dateAdded = "2023-01-01",
+            dataPath = "/path/to/file"
         )
         every { getAudioTracksUseCase() } returns flow {
             kotlinx.coroutines.delay(10)

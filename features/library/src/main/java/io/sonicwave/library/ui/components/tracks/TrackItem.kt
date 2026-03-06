@@ -1,4 +1,4 @@
-package io.sonicwave.library.ui.components
+package io.sonicwave.library.ui.components.tracks
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

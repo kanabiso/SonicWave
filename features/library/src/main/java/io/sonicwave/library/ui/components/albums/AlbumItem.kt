@@ -1,4 +1,4 @@
-package io.sonicwave.library.ui.components
+package io.sonicwave.library.ui.components.albums
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

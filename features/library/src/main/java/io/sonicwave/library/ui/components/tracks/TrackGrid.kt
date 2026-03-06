@@ -1,4 +1,4 @@
-package io.sonicwave.library.ui.components
+package io.sonicwave.library.ui.components.tracks
 
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState

@@ -1,6 +1,5 @@
 package io.sonicwave.library.ui
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,13 +25,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.sonicwave.library.R
-import io.sonicwave.library.ui.components.AlbumGrid
+import io.sonicwave.library.ui.components.albums.AlbumGrid
 import io.sonicwave.library.ui.components.FilterRow
 import io.sonicwave.library.ui.components.LibraryTitle
 import io.sonicwave.library.ui.components.RequireAudioPermission
 import io.sonicwave.library.ui.components.SortSheet
-import io.sonicwave.library.ui.components.TrackGrid
-import io.sonicwave.library.ui.components.TrackList
+import io.sonicwave.library.ui.components.tracks.TrackGrid
+import io.sonicwave.library.ui.components.tracks.TrackList
 
 @Composable
 fun LibraryScreenRoot(
