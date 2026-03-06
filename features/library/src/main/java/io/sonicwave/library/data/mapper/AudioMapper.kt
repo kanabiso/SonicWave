@@ -21,15 +21,15 @@ fun Cursor.toAudioTrack(): AudioTrack {
 
     return AudioTrack(
         id = id,
-        title = getString(titleColumn) ?: "Unknown Title",
-        artist = getString(artistColumn) ?: "Unknown Artist",
-        album = getString(albumColumn) ?: "Unknown Album",
+        title = getString(titleColumn),
+        artist = getString(artistColumn),
+        album = getString(albumColumn),
         uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id).toString(),
         durationMs = getLong(durationColumn),
         albumId = getLong(albumIdColumn),
-        track = getString(trackColumn) ?: "",
-        year = getString(yearColumn) ?: "",
+        track = getString(trackColumn),
+        year = getString(yearColumn),
         dateAdded = getString(dateAddedColumn),
-        dataPath = getString(dataColumn) ?: ""
+        dataPath = getString(dataColumn)
     )
 }

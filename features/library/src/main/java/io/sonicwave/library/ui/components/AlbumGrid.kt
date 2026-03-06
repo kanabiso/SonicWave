@@ -26,8 +26,8 @@ fun AlbumGrid(
         columns = GridCells.Fixed(2),
         state = gridState,
         contentPadding = PaddingValues(1.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
         modifier = Modifier.fillMaxSize()
     ) {
         items(
@@ -37,7 +37,7 @@ fun AlbumGrid(
             AlbumItem(
                 name = album.name ?: stringResource(R.string.unknown_album),
                 artist = album.artist ?: stringResource(R.string.unknown_artist),
-                year = album.year ?: stringResource(R.string.unknown_year),
+                year = album.year,
                 coverUriString = album.coverUri,
                 duration = album.duration,
             )

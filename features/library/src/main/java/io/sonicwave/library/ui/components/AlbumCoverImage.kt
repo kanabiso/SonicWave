@@ -33,9 +33,8 @@ fun AlbumCoverImage(
             .build(),
         contentDescription = null,
         modifier = modifier
-            .size(128.dp)
             .clip(RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .background(MaterialTheme.colorScheme.surface)
     ) {
         val state = painter.state
         if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error || state is AsyncImagePainter.State.Empty) {
@@ -44,10 +43,11 @@ fun AlbumCoverImage(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.border_all_24),
+                    painter = painterResource(id = R.drawable.music_note_2_300dp),
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(48.dp)
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .size(200.dp)
                 )
             }
         } else {

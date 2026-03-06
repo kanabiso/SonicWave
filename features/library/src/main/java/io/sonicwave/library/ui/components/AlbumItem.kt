@@ -2,8 +2,7 @@ package io.sonicwave.library.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -24,7 +22,7 @@ import androidx.compose.ui.unit.sp
 fun AlbumItem(
     name: String,
     artist: String,
-    year: String,
+    year: String?,
     duration: String,
     coverUriString: String,
     modifier: Modifier = Modifier
@@ -36,51 +34,52 @@ fun AlbumItem(
         ),
         shape = MaterialTheme.shapes.large,
         modifier = modifier
-            .fillMaxWidth(0.5f)
-            .fillMaxHeight(0.3f)
+            .fillMaxWidth()
+            .aspectRatio(0.75f)
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
-            AlbumCoverImage(coverUriString = coverUriString)
+            AlbumCoverImage(
+                coverUriString = coverUriString,
+                modifier = Modifier
+                    .weight(3f)
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, end = 8.dp, start = 8.dp, bottom = 0.dp)
+            )
 
-            Text(
-                text = name,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleSmall,
-                textAlign = TextAlign.Center,
-                maxLines = 1,
-            )
-            Text(
-                text = artist,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelSmall,
-            )
-            Row(
-                horizontalArrangement = Arrangement.Center,
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 8.dp, vertical = 6.dp)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                if (year.isNotBlank()) {
-                    Text(
-                        text = "$year | ",
-                        overflow = TextOverflow.Ellipsis,
-                        fontSize = 10.sp
-                    )
-                }
                 Text(
-                    text = duration,
+                    text = name,
+                    style = MaterialTheme.typography.titleSmall.copy(fontSize = 12.sp),
+                    maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    fontSize = 10.sp
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = artist,
+                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 8.sp),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = if (year != null) "$year • $duration" else duration,
+                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 8.sp),
+                    maxLines = 1,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
                 )
             }
         }
     }
 }
-
 //@Preview(showBackground = true, showSystemUi = true)
 //@Composable
 //fun AlbumItemPreview() {
