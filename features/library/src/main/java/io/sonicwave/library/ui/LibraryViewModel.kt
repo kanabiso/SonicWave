@@ -21,10 +21,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import java.io.File
@@ -44,10 +45,13 @@ class LibraryViewModel @Inject constructor(
     private val isDescFlow = _uiState.map { it.isDesc }.distinctUntilChanged()
     private val isAlbumGroupFlow = _uiState.map { it.isAlbumGroup }.distinctUntilChanged()
 
-    private val albumArtBaseUri = "content://media/external/audio/albumart"
+    private val refreshTrigger = MutableStateFlow(0)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val libraryItems: StateFlow<ImmutableList<LibraryItemUiModel>> = isAlbumGroupFlow
+    val libraryItems: StateFlow<ImmutableList<LibraryItemUiModel>> = combine(
+        isAlbumGroupFlow,
+        refreshTrigger
+    ) { isAlbumGroup, _ -> isAlbumGroup }
         .flatMapLatest { isAlbumGroup ->
             if (isAlbumGroup) {
                 getSortedAlbumsUseCase(sortOrderFlow, isDescFlow).map { albums ->
@@ -64,7 +68,7 @@ class LibraryViewModel @Inject constructor(
             }
         }
         .map { items-> items.toImmutableList() }
-        .onStart { _uiState.update { it.copy(isLoading = false) } }
+        .onEach { _uiState.update { it.copy(isLoading = false) } }
         .catch { exception -> _uiState.update { it.copy(isLoading = false, errorMessage = exception.message) } }
         .stateIn(
             scope = viewModelScope,
@@ -88,6 +92,10 @@ class LibraryViewModel @Inject constructor(
                         isAlbumGroup = event.isAlbumGroup,
                     )
                 }
+            }
+            is LibraryUiEvent.OnPermissionsGranted -> {
+                _uiState.update { it.copy(isLoading = true) }
+                refreshTrigger.value += 1
             }
         }
     }

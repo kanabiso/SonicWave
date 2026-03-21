@@ -18,12 +18,12 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 
 @Composable
-fun RequirePermission(
-    permission: String,
+fun RequireMultiplePermissions(
+    permissions: List<String>,
     onGrantedContent: @Composable () -> Unit,
     onDeniedContent: @Composable (
         isPermanentlyDenied: Boolean,
-        requestPermission: () -> Unit,
+        requestPermissions: () -> Unit,
         openSettings: () -> Unit
     ) -> Unit
 ) {
@@ -31,36 +31,46 @@ fun RequirePermission(
     val activity = context as? Activity
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    var hasPermission by remember {
-        mutableStateOf(
-            ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
-        )
+    // check permissions
+    var allPermissionsGranted by remember(permissions) {
+        mutableStateOf(permissions.all {
+            ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
+        })
     }
 
     var isPermanentlyDenied by remember { mutableStateOf(false) }
 
+    // contract for requesting multi permissions
     val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = { isGranted ->
-            hasPermission = isGranted
-            if (!isGranted && activity != null) {
-                isPermanentlyDenied = !ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+        onResult = { result ->
+            val allGranted = result.values.all { it }
+            allPermissionsGranted = allGranted
+
+            if (!allGranted && activity != null) {
+                // if any permission is not granted, check if it was permanently denied
+                val anyPermanentlyDenied = result.entries
+                    .filter { !it.value } // take only denied permissions
+                    .any { !ActivityCompat.shouldShowRequestPermissionRationale(activity, it.key) }
+                isPermanentlyDenied = anyPermanentlyDenied
             }
         }
     )
 
-    LaunchedEffect(key1 = permission) {
-        if (!hasPermission) {
-            permissionLauncher.launch(permission)
+    LaunchedEffect(key1 = permissions) {
+        if (!allPermissionsGranted) {
+            permissionLauncher.launch(permissions.toTypedArray())
         }
     }
 
-    DisposableEffect(lifecycleOwner, permission) {
+    DisposableEffect(lifecycleOwner, permissions) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                val isGrantedNow = ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
-                hasPermission = isGrantedNow
-                if (isGrantedNow) isPermanentlyDenied = false
+                val allGrantedNow = permissions.all {
+                    ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
+                }
+                allPermissionsGranted = allGrantedNow
+                if (allGrantedNow) isPermanentlyDenied = false
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -69,12 +79,12 @@ fun RequirePermission(
         }
     }
 
-    if (hasPermission) {
+    if (allPermissionsGranted) {
         onGrantedContent()
     } else {
         onDeniedContent(
             isPermanentlyDenied,
-            { permissionLauncher.launch(permission) },
+            { permissionLauncher.launch(permissions.toTypedArray()) },
             {
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                     data = Uri.fromParts("package", context.packageName, null)

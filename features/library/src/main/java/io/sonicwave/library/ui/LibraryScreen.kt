@@ -42,6 +42,10 @@ fun LibraryScreenRoot(
     val libraryItems = viewModel.libraryItems.collectAsStateWithLifecycle().value
 
     RequireAudioPermission {
+        LaunchedEffect(Unit) {
+            viewModel.onEvent(LibraryUiEvent.OnPermissionsGranted)
+        }
+
         LibraryScreen(
             uiState = uiState,
             libraryItems = libraryItems,

@@ -14,4 +14,6 @@ sealed interface LibraryUiEvent {
     ) : LibraryUiEvent
 
     data object OnAlbumIconClick : LibraryUiEvent
+    data object OnPermissionsGranted : LibraryUiEvent
+
 }

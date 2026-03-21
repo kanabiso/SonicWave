@@ -25,6 +25,7 @@ fun TrackList(
         ) { track ->
             TrackItem(
                 track = track,
+                coverUriString = track.coverUri,
                 onClick = { onTrackClick(track) }
             )
         }

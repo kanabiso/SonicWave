@@ -18,28 +18,30 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.sonicwave.library.R
-import io.sonicwave.permissions.RequirePermission
+import io.sonicwave.permissions.RequireMultiplePermissions
 
 @Composable
 fun RequireAudioPermission(
     content: @Composable () -> Unit
 ) {
-    val permissionToRequest = remember {
+    val permissionsToRequest = remember {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Manifest.permission.READ_MEDIA_AUDIO
-            Manifest.permission.READ_MEDIA_IMAGES
+            listOf(
+                Manifest.permission.READ_MEDIA_AUDIO,
+                Manifest.permission.READ_MEDIA_IMAGES
+            )
         } else {
-            Manifest.permission.READ_EXTERNAL_STORAGE
+            listOf(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
     }
 
-    RequirePermission(
-        permission = permissionToRequest,
+    RequireMultiplePermissions(
+        permissions = permissionsToRequest,
         onGrantedContent = content,
-        onDeniedContent = { isPermanentlyDenied, requestPermission, openSettings ->
+        onDeniedContent = { isPermanentlyDenied, requestPermissions, openSettings ->
             PermissionDeniedView(
                 isPermanentlyDenied = isPermanentlyDenied,
-                onRequestPermission = requestPermission,
+                onRequestPermission = requestPermissions,
                 onOpenSettings = openSettings
             )
         }

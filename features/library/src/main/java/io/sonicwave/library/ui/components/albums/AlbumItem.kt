@@ -17,6 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.sonicwave.library.R
+import io.sonicwave.library.ui.components.AlbumCoverImage
 
 @Composable
 fun AlbumItem(
@@ -42,6 +44,7 @@ fun AlbumItem(
         ) {
             AlbumCoverImage(
                 coverUriString = coverUriString,
+                defaultCover = R.drawable.music_note_2_300dp,
                 modifier = Modifier
                     .weight(3f)
                     .fillMaxWidth()

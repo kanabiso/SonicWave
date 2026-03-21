@@ -25,6 +25,7 @@ fun TrackGrid(
         ) { track ->
             TrackCell(
                 track = track,
+                coverUriString = track.coverUri,
                 onClick = { onTrackClick(track) }
             )
         }
