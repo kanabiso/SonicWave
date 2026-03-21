@@ -6,8 +6,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import io.sonicwave.library.data.repository.DataStorePreferenceRepository
 import io.sonicwave.library.data.repository.MediaStoreAudioRepositoryImpl
 import io.sonicwave.library.domain.repository.AudioRepository
+import io.sonicwave.library.domain.repository.PreferenceRepository
 import jakarta.inject.Singleton
 
 @Module
@@ -20,5 +22,13 @@ internal object LibraryModule {
         @ApplicationContext context: Context
     ): AudioRepository {
         return MediaStoreAudioRepositoryImpl(context)
+    }
+
+    @Provides
+    @Singleton
+    fun providePreferenceRepository(
+        @ApplicationContext context: Context
+    ): PreferenceRepository {
+        return DataStorePreferenceRepository(context)
     }
 }

@@ -16,7 +16,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +25,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.sonicwave.library.R
 import io.sonicwave.library.ui.components.albums.AlbumGrid
+import io.sonicwave.library.ui.components.albums.AlbumList
 import io.sonicwave.library.ui.components.FilterRow
 import io.sonicwave.library.ui.components.LibraryTitle
 import io.sonicwave.library.ui.components.RequireAudioPermission
@@ -63,8 +63,6 @@ fun LibraryScreen(
     uiState: LibraryUiState,
     onEvent: (LibraryUiEvent) -> Unit,
 ) {
-    var isListLayout by rememberSaveable { mutableStateOf(true) }
-
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -83,10 +81,11 @@ fun LibraryScreen(
         LibraryTitle(modifier = Modifier.align(Alignment.CenterHorizontally))
 
         FilterRow(
-            isListLayout = isListLayout,
+            isListLayout = if (uiState.isAlbumGroup) uiState.isAlbumListLayout else uiState.isTracksListLayout,
             isAlbumGroup = uiState.isAlbumGroup,
             onFilterClick = { showBottomSheet = true },
-            onLayoutClick = { isListLayout = !isListLayout },
+            onAlbumLayoutClick = { onEvent(LibraryUiEvent.OnAlbumLayoutToggleClick) },
+            onTracksLayoutClick = { onEvent(LibraryUiEvent.OnTracksLayoutToggleClick) },
             onAlbumClick = {
                 onEvent(LibraryUiEvent.OnAlbumIconClick) }
         )
@@ -114,17 +113,20 @@ fun LibraryScreen(
 
                         val albums = libraryItems.filterIsInstance<AlbumUiModel>()
 
-                        if (isListLayout) {
-
+                        if (uiState.isAlbumListLayout) {
+                            AlbumList(albums = albums, listState = listState) { album ->
+                                // Navigation to album details could be added here
+                            }
                         } else {
                             AlbumGrid(albums = albums, gridState = gridState) { album ->
+                                // Navigation to album details could be added here
                             }
                         }
 
                     } else {
                         val tracks = libraryItems.filterIsInstance<TrackUiModel>()
 
-                        if (isListLayout) {
+                        if (uiState.isTracksListLayout) {
                             TrackList(audioFiles = tracks, listState = listState) { track ->
                                 onEvent(LibraryUiEvent.OnTrackClick(track.id))
                             }

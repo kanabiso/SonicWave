@@ -19,9 +19,11 @@ mockk = "1.14.9"
 turbine = "1.2.1"
 runtime = "1.10.3"
 foundation = "1.10.3"
+datastore = "1.1.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-material3 = { module = "androidx.compose.material3:material3" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }

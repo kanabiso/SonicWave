@@ -16,7 +16,8 @@ fun FilterRow(
     isListLayout: Boolean,
     isAlbumGroup: Boolean,
     onFilterClick: () -> Unit,
-    onLayoutClick: () -> Unit,
+    onAlbumLayoutClick: () -> Unit,
+    onTracksLayoutClick: () -> Unit,
     onAlbumClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -31,7 +32,7 @@ fun FilterRow(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.filter_list),
-                    contentDescription = null
+                    contentDescription = "Filter"
                 )
             }
             IconButton(
@@ -39,17 +40,23 @@ fun FilterRow(
             ) {
                 Icon(
                     painter = painterResource(id = if (isAlbumGroup) R.drawable.filled_album_24 else R.drawable.album_24 ),
-                    contentDescription = null,
+                    contentDescription = "Group by Album",
                 )
             }
         }
         IconButton(
-            onClick = { onLayoutClick() }
+            onClick = {
+                if (isAlbumGroup) {
+                    onAlbumLayoutClick()
+                } else {
+                    onTracksLayoutClick()
+                }
+            }
         ) {
             Icon(
                 painter = painterResource(id =
                     if (isListLayout) R.drawable.border_all_24 else R.drawable.density_small_24),
-                contentDescription = null
+                contentDescription = if (isListLayout) "Switch to Grid View" else "Switch to List View"
             )
         }
     }

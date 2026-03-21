@@ -9,6 +9,8 @@ data class LibraryUiState(
     val sortOrder: SortOrder = SortOrder.TITLE,
     val isDesc: Boolean = false,
     val isAlbumGroup: Boolean = false,
+    val isAlbumListLayout: Boolean = false,
+    val isTracksListLayout: Boolean = true,
     val filterQuery: String = ""
 )
 

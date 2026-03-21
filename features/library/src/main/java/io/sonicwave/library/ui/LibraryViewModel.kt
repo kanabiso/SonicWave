@@ -1,6 +1,5 @@
 package io.sonicwave.library.ui
 
-import android.os.Environment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -9,6 +8,10 @@ import io.sonicwave.library.domain.usecase.GetAudioTracksUseCase
 import io.sonicwave.library.domain.usecase.GetSortedAlbumsUseCase
 import io.sonicwave.library.domain.usecase.GetSortedAudioTracksUseCase
 import io.sonicwave.library.domain.usecase.PlayTrackUseCase
+import io.sonicwave.library.domain.usecase.GetAlbumLayoutPreferenceUseCase
+import io.sonicwave.library.domain.usecase.GetTracksLayoutPreferenceUseCase
+import io.sonicwave.library.domain.usecase.SetAlbumLayoutPreferenceUseCase
+import io.sonicwave.library.domain.usecase.SetTracksLayoutPreferenceUseCase
 import io.sonicwave.media.model.AudioAlbum
 import io.sonicwave.media.model.AudioTrack
 import jakarta.inject.Inject
@@ -24,10 +27,12 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.io.File
 
 @HiltViewModel
@@ -36,10 +41,28 @@ class LibraryViewModel @Inject constructor(
     private val playTrackUseCase: PlayTrackUseCase,
     private val getSortedAudioTracksUseCase: GetSortedAudioTracksUseCase,
     private val getSortedAlbumsUseCase: GetSortedAlbumsUseCase,
+    private val getAlbumLayoutPreferenceUseCase: GetAlbumLayoutPreferenceUseCase,
+    private val setAlbumLayoutPreferenceUseCase: SetAlbumLayoutPreferenceUseCase,
+    private val getTracksLayoutPreferenceUseCase: GetTracksLayoutPreferenceUseCase,
+    private val setTracksLayoutPreferenceUseCase: SetTracksLayoutPreferenceUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LibraryUiState(isLoading = true))
     val uiState: StateFlow<LibraryUiState> = _uiState.asStateFlow()
+
+    init {
+        getAlbumLayoutPreferenceUseCase()
+            .onEach { isList ->
+                _uiState.update { it.copy(isAlbumListLayout = isList) }
+            }
+            .launchIn(viewModelScope)
+
+        getTracksLayoutPreferenceUseCase()
+            .onEach { isList ->
+                _uiState.update { it.copy(isTracksListLayout = isList) }
+            }
+            .launchIn(viewModelScope)
+    }
 
     private val sortOrderFlow = _uiState.map { it.sortOrder }.distinctUntilChanged()
     private val isDescFlow = _uiState.map { it.isDesc }.distinctUntilChanged()
@@ -83,6 +106,16 @@ class LibraryViewModel @Inject constructor(
             is LibraryUiEvent.OnFilterClick -> {}
             is LibraryUiEvent.OnAlbumIconClick -> {
                 _uiState.update { it.copy(isAlbumGroup = !it.isAlbumGroup) }
+            }
+            is LibraryUiEvent.OnAlbumLayoutToggleClick -> {
+                viewModelScope.launch {
+                    setAlbumLayoutPreferenceUseCase(!_uiState.value.isAlbumListLayout)
+                }
+            }
+            is LibraryUiEvent.OnTracksLayoutToggleClick -> {
+                viewModelScope.launch {
+                    setTracksLayoutPreferenceUseCase(!_uiState.value.isTracksListLayout)
+                }
             }
             is LibraryUiEvent.OnApplyFilters -> {
                 _uiState.update {
