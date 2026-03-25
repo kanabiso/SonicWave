@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="minimize">Minimize</string>
+    <string name="more_options">More Options</string>
+    <string name="go_to_album">Go to album</string>
+    <string name="go_to_artist">Go to artist</string>
+    <string name="show_lyrics">Show lyrics</string>
+    <string name="add_to_playlist">Add to playlist</string>
+</resources>
