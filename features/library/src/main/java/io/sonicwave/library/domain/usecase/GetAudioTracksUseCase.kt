@@ -2,7 +2,7 @@ package io.sonicwave.library.domain.usecase
 
 
 import io.sonicwave.library.domain.repository.AudioRepository
-import io.sonicwave.media.model.AudioTrack
+import io.sonicwave.media.domain.model.AudioTrack
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 

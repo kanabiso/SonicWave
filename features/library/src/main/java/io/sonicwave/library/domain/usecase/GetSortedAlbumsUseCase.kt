@@ -2,7 +2,7 @@ package io.sonicwave.library.domain.usecase
 
 import io.sonicwave.library.domain.model.SortOrder
 import io.sonicwave.library.domain.repository.AudioRepository
-import io.sonicwave.media.model.AudioAlbum
+import io.sonicwave.media.domain.model.AudioAlbum
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine

@@ -3,7 +3,7 @@ package io.sonicwave.library.data.mapper
 import android.content.ContentUris
 import android.database.Cursor
 import android.provider.MediaStore
-import io.sonicwave.media.model.AudioTrack
+import io.sonicwave.media.domain.model.AudioTrack
 
 fun Cursor.toAudioTrack(): AudioTrack {
     val idColumn = getColumnIndexOrThrow(MediaStore.Audio.Media._ID)

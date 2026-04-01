@@ -6,6 +6,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -28,11 +29,12 @@ fun SonicWaveMain() {
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             AnimatedVisibility(
-                visible = state.isMinimized,
+                visible = state.isMinimized && state.track.id != 0L,
                 enter = slideInVertically { it },
                 exit = slideOutVertically { it }
             ) {
                 MiniPlayerBar(
+                    modifier = Modifier.navigationBarsPadding(),
                     state = state,
                     onEvent = viewModel::onEvent
                 )

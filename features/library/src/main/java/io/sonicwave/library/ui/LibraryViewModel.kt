@@ -4,16 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.sonicwave.common.utils.formatAsDuration
+import io.sonicwave.library.domain.usecase.PlayTrackUseCase
+import io.sonicwave.library.domain.usecase.GetAlbumLayoutPreferenceUseCase
 import io.sonicwave.library.domain.usecase.GetAudioTracksUseCase
 import io.sonicwave.library.domain.usecase.GetSortedAlbumsUseCase
 import io.sonicwave.library.domain.usecase.GetSortedAudioTracksUseCase
-import io.sonicwave.library.domain.usecase.PlayTrackUseCase
-import io.sonicwave.library.domain.usecase.GetAlbumLayoutPreferenceUseCase
 import io.sonicwave.library.domain.usecase.GetTracksLayoutPreferenceUseCase
 import io.sonicwave.library.domain.usecase.SetAlbumLayoutPreferenceUseCase
 import io.sonicwave.library.domain.usecase.SetTracksLayoutPreferenceUseCase
-import io.sonicwave.media.model.AudioAlbum
-import io.sonicwave.media.model.AudioTrack
+import io.sonicwave.media.domain.model.AudioAlbum
+import io.sonicwave.media.domain.model.AudioTrack
 import jakarta.inject.Inject
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -101,7 +101,12 @@ class LibraryViewModel @Inject constructor(
 
     fun onEvent(event: LibraryUiEvent) {
         when (event) {
-            is LibraryUiEvent.OnTrackClick -> playTrackUseCase(event.trackId)
+            is LibraryUiEvent.OnTrackClick -> {
+                viewModelScope.launch {
+                    playTrackUseCase(event.trackId)
+
+                }
+            }
             is LibraryUiEvent.OnTrackLongClick -> {}
             is LibraryUiEvent.OnFilterClick -> {}
             is LibraryUiEvent.OnAlbumIconClick -> {

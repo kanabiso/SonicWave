@@ -10,7 +10,6 @@ import android.os.Looper
 import android.provider.MediaStore
 import io.sonicwave.library.data.mapper.toAudioTrack
 import io.sonicwave.library.domain.repository.AudioRepository
-import io.sonicwave.media.model.AudioTrack
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -19,6 +18,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import androidx.core.net.toUri
+import io.sonicwave.media.domain.model.AudioTrack
 
 class MediaStoreAudioRepositoryImpl @Inject constructor(
     private val context: Context
@@ -101,5 +101,37 @@ class MediaStoreAudioRepositoryImpl @Inject constructor(
             }
         }
         return audioList
+    }
+
+    override suspend fun getTrackById(id: Long): AudioTrack? = withContext(Dispatchers.IO) {
+        val projection = arrayOf(
+            MediaStore.Audio.Media._ID,
+            MediaStore.Audio.Media.TITLE,
+            MediaStore.Audio.Media.ALBUM,
+            MediaStore.Audio.Media.ALBUM_ID,
+            MediaStore.Audio.Media.TRACK,
+            MediaStore.Audio.Media.YEAR,
+            MediaStore.Audio.Media.DATE_ADDED,
+            MediaStore.Audio.Media.ARTIST,
+            MediaStore.Audio.Media.DURATION,
+            MediaStore.Audio.Media.DATA
+        )
+
+        val selection = "${MediaStore.Audio.Media._ID} = ?"
+        val selectionArgs = arrayOf(id.toString())
+
+        contentResolver.query(
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            projection,
+            selection,
+            selectionArgs,
+            null
+        )?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                return@withContext cursor.toAudioTrack()
+            }
+        }
+
+        return@withContext null
     }
 }
