@@ -16,4 +16,6 @@
     <string name="unknown_year">\????</string>
     <string name="unknown_track">Unknown track\n</string>
     <string name="album_cover">Album cover</string>
+    <string name="albums">Albums</string>
+    <string name="your_tarcks">Your tracks</string>
 </resources>

@@ -11,10 +11,11 @@ import io.sonicwave.library.R
 
 @Composable
 fun LibraryTitle(
+    text: String = stringResource(R.string.your_library),
     modifier: Modifier = Modifier
 ) {
     Text(
-        text = stringResource(R.string.your_library),
+        text = text,
         style = MaterialTheme.typography.titleLarge,
         fontSize = MaterialTheme.typography.displayMedium.fontSize,
         modifier = modifier

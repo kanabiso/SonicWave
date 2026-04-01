@@ -78,7 +78,10 @@ fun LibraryScreen(
     Column(
         modifier = modifier.padding(16.dp)
     ) {
-        LibraryTitle(modifier = Modifier.align(Alignment.CenterHorizontally))
+        LibraryTitle(
+            text = if (uiState.isAlbumGroup) stringResource(R.string.albums) else stringResource(R.string.your_tarcks),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
 
         FilterRow(
             isListLayout = if (uiState.isAlbumGroup) uiState.isAlbumListLayout else uiState.isTracksListLayout,
