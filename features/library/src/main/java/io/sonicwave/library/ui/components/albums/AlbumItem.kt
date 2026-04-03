@@ -1,5 +1,6 @@
 package io.sonicwave.library.ui.components.albums
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,7 +30,7 @@ fun AlbumItem(
     duration: String,
     coverUriString: String,
     onClick: () -> Unit = {},
-    modifier: Modifier = Modifier
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
 ) {
     Card(
         colors = CardDefaults.cardColors(

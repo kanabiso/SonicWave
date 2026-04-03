@@ -31,11 +31,9 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
 
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
-    private val getAudioTracksUseCase: GetAudioTracksUseCase,
     private val playTrackUseCase: PlayTrackUseCase,
     private val getSortedAudioTracksUseCase: GetSortedAudioTracksUseCase,
     private val getSortedAlbumsUseCase: GetSortedAlbumsUseCase,

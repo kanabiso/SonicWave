@@ -1,6 +1,5 @@
 package io.sonicwave.library.data.repository
 
-import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
 import android.database.ContentObserver
@@ -41,9 +40,9 @@ class MediaStoreAudioRepositoryImpl @Inject constructor(
     override suspend fun getAlbumArtData(uriString: String): ByteArray? = withContext(Dispatchers.IO) {
         val retriever = android.media.MediaMetadataRetriever()
         return@withContext try {
-            retriever.setDataSource(context, Uri.parse(uriString))
+            retriever.setDataSource(context, uriString.toUri())
             retriever.embeddedPicture
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         } finally {
             retriever.release()
@@ -57,7 +56,7 @@ class MediaStoreAudioRepositoryImpl @Inject constructor(
         return@withContext try {
             contentResolver.openInputStream(uri)?.close()
             uri
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }

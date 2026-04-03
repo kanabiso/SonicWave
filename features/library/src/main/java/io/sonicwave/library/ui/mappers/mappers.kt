@@ -1,13 +1,11 @@
 package io.sonicwave.library.ui.mappers
 
 import android.content.ContentUris
-import android.net.Uri
 import io.sonicwave.common.utils.formatAsDuration
 import io.sonicwave.library.ui.LibraryScreen.AlbumUiModel
 import io.sonicwave.library.ui.LibraryScreen.TrackUiModel
 import io.sonicwave.media.domain.model.AudioAlbum
 import io.sonicwave.media.domain.model.AudioTrack
-import java.io.File
 import androidx.core.net.toUri
 
 fun AudioTrack.toUiModel(isPlaying: Boolean): TrackUiModel {
