@@ -1,9 +1,8 @@
-package io.sonicwave.library.ui
+package io.sonicwave.library.ui.LibraryScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.sonicwave.common.utils.formatAsDuration
 import io.sonicwave.library.domain.usecase.PlayTrackUseCase
 import io.sonicwave.library.domain.usecase.GetAlbumLayoutPreferenceUseCase
 import io.sonicwave.library.domain.usecase.GetAudioTracksUseCase
@@ -12,8 +11,7 @@ import io.sonicwave.library.domain.usecase.GetSortedAudioTracksUseCase
 import io.sonicwave.library.domain.usecase.GetTracksLayoutPreferenceUseCase
 import io.sonicwave.library.domain.usecase.SetAlbumLayoutPreferenceUseCase
 import io.sonicwave.library.domain.usecase.SetTracksLayoutPreferenceUseCase
-import io.sonicwave.media.domain.model.AudioAlbum
-import io.sonicwave.media.domain.model.AudioTrack
+import io.sonicwave.library.ui.mappers.toUiModel
 import jakarta.inject.Inject
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -104,7 +102,6 @@ class LibraryViewModel @Inject constructor(
             is LibraryUiEvent.OnTrackClick -> {
                 viewModelScope.launch {
                     playTrackUseCase(event.trackId)
-
                 }
             }
             is LibraryUiEvent.OnTrackLongClick -> {}
@@ -136,58 +133,5 @@ class LibraryViewModel @Inject constructor(
                 refreshTrigger.value += 1
             }
         }
-    }
-
-    private fun getCoverUriString(folderPath: String?): String {
-        if (folderPath.isNullOrBlank()) return ""
-
-        val directory = File(folderPath)
-        if (!directory.exists() || !directory.isDirectory) return ""
-
-        val commonNames = listOf("cover.jpg", "cover.png", "folder.jpg", "folder.png")
-        for (name in commonNames) {
-            val file = File(directory, name)
-            if (file.exists()) {
-                return android.net.Uri.fromFile(file).toString()
-            }
-        }
-
-        val validExtensions = listOf("jpg", "jpeg", "png")
-        val imageFile = directory.listFiles()?.firstOrNull { file ->
-            file.isFile && file.extension.lowercase() in validExtensions
-        }
-
-        if (imageFile != null) {
-            return android.net.Uri.fromFile(imageFile).toString()
-        }
-
-        return ""
-    }
-
-    private fun AudioTrack.toUiModel(isPlaying: Boolean): TrackUiModel {
-        val folderPath = File(this.dataPath).parent ?: ""
-
-        return TrackUiModel(
-            id = this.id,
-            title = this.title,
-            artist = this.artist,
-            album = this.album,
-            albumId = this.albumId,
-            duration = this.durationMs.formatAsDuration(),
-            isPlaying = isPlaying,
-            coverUri = getCoverUriString(folderPath)
-        )
-    }
-
-    private fun AudioAlbum.toUiModel(): AlbumUiModel {
-        return AlbumUiModel(
-            id = this.albumId,
-            name = this.name,
-            artist = this.artist,
-            year = this.year,
-            duration = this.durationMs?.formatAsDuration() ?: "",
-            trackCount = this.trackCount,
-            coverUri = getCoverUriString(this.folderPath)
-        )
     }
 }

@@ -1,5 +1,7 @@
 package io.sonicwave.player.ui
 
+import android.content.ContentUris
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.Player
@@ -99,33 +101,15 @@ class PlayerViewModel @Inject constructor(
         title = this.title ?: "Unknown",
         artist = this.artist ?: "Unknown",
         album = this.album ?: "Unknown",
-        coverArtUrl = getCoverUriString(File(this.dataPath).parent ?: ""),
+        coverArtUrl = getCoverUri(this.albumId),
         durationMs = this.durationMs
     )
 
-    private fun getCoverUriString(folderPath: String?): String? {
-        if (folderPath.isNullOrBlank()) return null
+    private fun getCoverUri(albumId : Long): String{
+        val artworkUri = "content://media/external/audio/albumart".toUri()
+        val albumCoverUri = ContentUris.withAppendedId(artworkUri, albumId)
 
-        val directory = java.io.File(folderPath)
-        if (!directory.exists() || !directory.isDirectory) return null
-
-        val commonNames = listOf("cover.jpg", "cover.png", "folder.jpg", "folder.png")
-        for (name in commonNames) {
-            val file = java.io.File(directory, name)
-            if (file.exists()) {
-                return android.net.Uri.fromFile(file).toString()
-            }
-        }
-
-        val validExtensions = listOf("jpg", "jpeg", "png")
-        val imageFile = directory.listFiles()?.firstOrNull { file ->
-            file.isFile && file.extension.lowercase() in validExtensions
-        }
-
-        if (imageFile != null) {
-            return android.net.Uri.fromFile(imageFile).toString()
-        }
-
-        return null
+        return albumCoverUri.toString()
     }
+
 }
