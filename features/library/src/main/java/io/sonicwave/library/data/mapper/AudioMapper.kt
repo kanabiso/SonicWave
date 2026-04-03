@@ -27,7 +27,7 @@ fun Cursor.toAudioTrack(): AudioTrack {
         uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id).toString(),
         durationMs = getLong(durationColumn),
         albumId = getLong(albumIdColumn),
-        track = getString(trackColumn),
+        track = getInt(trackColumn),
         year = getString(yearColumn),
         dateAdded = getString(dateAddedColumn),
         dataPath = getString(dataColumn)

@@ -1,5 +1,6 @@
 package io.sonicwave.library.ui.components.albums
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -27,6 +28,7 @@ fun AlbumItem(
     year: String?,
     duration: String,
     coverUriString: String,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -40,7 +42,9 @@ fun AlbumItem(
             .aspectRatio(0.75f)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable(onClick = onClick)
         ) {
             AlbumCoverImage(
                 coverUriString = coverUriString,

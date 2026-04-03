@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.sonicwave.library.R
-import io.sonicwave.library.ui.AlbumUiModel
+import io.sonicwave.library.ui.LibraryScreen.AlbumUiModel
 import io.sonicwave.library.ui.components.AlbumCoverImage
 
 @Composable

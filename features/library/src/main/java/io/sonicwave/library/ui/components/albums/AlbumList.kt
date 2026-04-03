@@ -1,5 +1,6 @@
 package io.sonicwave.library.ui.components.albums
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -7,13 +8,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import io.sonicwave.library.ui.AlbumUiModel
+import io.sonicwave.library.ui.LibraryScreen.AlbumUiModel
 
 @Composable
 fun AlbumList(
     albums: List<AlbumUiModel>,
     listState: LazyListState = rememberLazyListState(),
-    onAlbumClick: (AlbumUiModel) -> Unit,
+    onAlbumClick: (Long) -> Unit,
 ) {
     LazyColumn(
         state = listState,
@@ -25,7 +26,7 @@ fun AlbumList(
         ) { album ->
             AlbumListItem(
                 album = album,
-                onClick = { onAlbumClick(album) }
+                onClick = { onAlbumClick(album.id) },
             )
         }
     }

@@ -22,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.sonicwave.library.R
 import io.sonicwave.library.domain.model.SortOrder
-import io.sonicwave.library.ui.LibraryUiEvent
+import io.sonicwave.library.ui.LibraryScreen.LibraryUiEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

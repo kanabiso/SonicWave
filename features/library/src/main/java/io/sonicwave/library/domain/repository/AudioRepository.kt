@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface AudioRepository {
     fun getAudioFiles(): Flow<List<AudioTrack>>
+    fun getAudioFilesFromAlbum(albumId: Long): List<AudioTrack>
     suspend fun getAlbumArtUri(albumId: Long): Uri?
     suspend fun getAlbumArtData(uriString: String): ByteArray?
     suspend fun getTrackById(id: Long): AudioTrack?

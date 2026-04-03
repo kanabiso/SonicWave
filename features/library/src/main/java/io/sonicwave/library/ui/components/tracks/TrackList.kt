@@ -7,7 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import io.sonicwave.library.ui.TrackUiModel
+import io.sonicwave.library.ui.LibraryScreen.TrackUiModel
 
 @Composable
 fun TrackList(

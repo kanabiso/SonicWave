@@ -25,6 +25,19 @@ class MediaStoreAudioRepositoryImpl @Inject constructor(
 ) : AudioRepository {
     private val contentResolver = context.contentResolver
 
+    val projection = arrayOf(
+        MediaStore.Audio.Media._ID,
+        MediaStore.Audio.Media.TITLE,
+        MediaStore.Audio.Media.ALBUM,
+        MediaStore.Audio.Media.ALBUM_ID,
+        MediaStore.Audio.Media.TRACK,
+        MediaStore.Audio.Media.YEAR,
+        MediaStore.Audio.Media.DATE_ADDED,
+        MediaStore.Audio.Media.ARTIST,
+        MediaStore.Audio.Media.DURATION,
+        MediaStore.Audio.Media.DATA
+    )
+
     override suspend fun getAlbumArtData(uriString: String): ByteArray? = withContext(Dispatchers.IO) {
         val retriever = android.media.MediaMetadataRetriever()
         return@withContext try {
@@ -71,18 +84,7 @@ class MediaStoreAudioRepositoryImpl @Inject constructor(
 
     private fun fetchAudioTracksFromCursor(): List<AudioTrack> {
         val audioList = mutableListOf<AudioTrack>()
-        val projection = arrayOf(
-            MediaStore.Audio.Media._ID,
-            MediaStore.Audio.Media.TITLE,
-            MediaStore.Audio.Media.ALBUM,
-            MediaStore.Audio.Media.ALBUM_ID,
-            MediaStore.Audio.Media.TRACK,
-            MediaStore.Audio.Media.YEAR,
-            MediaStore.Audio.Media.DATE_ADDED,
-            MediaStore.Audio.Media.ARTIST,
-            MediaStore.Audio.Media.DURATION,
-            MediaStore.Audio.Media.DATA
-        )
+
         val selection = "${MediaStore.Audio.Media.IS_MUSIC} != 0"
         val sortOrder = "${MediaStore.Audio.Media.TITLE} ASC"
 
@@ -104,18 +106,6 @@ class MediaStoreAudioRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTrackById(id: Long): AudioTrack? = withContext(Dispatchers.IO) {
-        val projection = arrayOf(
-            MediaStore.Audio.Media._ID,
-            MediaStore.Audio.Media.TITLE,
-            MediaStore.Audio.Media.ALBUM,
-            MediaStore.Audio.Media.ALBUM_ID,
-            MediaStore.Audio.Media.TRACK,
-            MediaStore.Audio.Media.YEAR,
-            MediaStore.Audio.Media.DATE_ADDED,
-            MediaStore.Audio.Media.ARTIST,
-            MediaStore.Audio.Media.DURATION,
-            MediaStore.Audio.Media.DATA
-        )
 
         val selection = "${MediaStore.Audio.Media._ID} = ?"
         val selectionArgs = arrayOf(id.toString())
@@ -133,5 +123,28 @@ class MediaStoreAudioRepositoryImpl @Inject constructor(
         }
 
         return@withContext null
+    }
+
+    override fun getAudioFilesFromAlbum(albumId: Long): List<AudioTrack> {
+        val audioList = mutableListOf<AudioTrack>()
+
+        val selection = "${MediaStore.Audio.Media.ALBUM_ID} = ?"
+        val selectionArgs = arrayOf(albumId.toString())
+
+        contentResolver.query(
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            projection,
+            selection,
+            selectionArgs,
+            null
+        )?.use { cursor ->
+
+            while (cursor.moveToNext()) {
+                audioList.add(
+                    cursor.toAudioTrack()
+                )
+            }
+        }
+        return audioList
     }
 }

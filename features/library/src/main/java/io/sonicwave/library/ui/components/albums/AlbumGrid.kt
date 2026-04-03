@@ -1,5 +1,6 @@
 package io.sonicwave.library.ui.components.albums
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,13 +15,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.sonicwave.library.R
-import io.sonicwave.library.ui.AlbumUiModel
+import io.sonicwave.library.ui.LibraryScreen.AlbumUiModel
+
 
 @Composable
 fun AlbumGrid(
     albums: List<AlbumUiModel>,
     gridState: LazyGridState = rememberLazyGridState(),
-    onAlbumClick: (AlbumUiModel) -> Unit
+    onAlbumClick: (Long) -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -40,6 +42,7 @@ fun AlbumGrid(
                 year = album.year,
                 coverUriString = album.coverUri,
                 duration = album.duration,
+                onClick = { onAlbumClick(album.id) },
             )
         }
     }

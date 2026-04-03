@@ -1,4 +1,4 @@
-package io.sonicwave.library.ui
+package io.sonicwave.library.ui.LibraryScreen
 
 import io.sonicwave.library.domain.model.SortOrder
 

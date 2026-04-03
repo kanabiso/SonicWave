@@ -1,4 +1,4 @@
-package io.sonicwave.library.ui
+package io.sonicwave.library.ui.LibraryScreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +36,7 @@ import io.sonicwave.library.ui.components.tracks.TrackList
 @Composable
 fun LibraryScreenRoot(
     modifier: Modifier = Modifier,
+    onAlbumClick: (Long) -> Unit = {},
     viewModel: LibraryViewModel = hiltViewModel(),
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
@@ -50,7 +51,8 @@ fun LibraryScreenRoot(
             uiState = uiState,
             libraryItems = libraryItems,
             onEvent = viewModel::onEvent,
-            modifier = modifier
+            modifier = modifier,
+            onAlbumClick = { onAlbumClick(it) }
         )
     }
 }
@@ -62,6 +64,7 @@ fun LibraryScreen(
     libraryItems: List<LibraryItemUiModel>,
     uiState: LibraryUiState,
     onEvent: (LibraryUiEvent) -> Unit,
+    onAlbumClick: (Long) -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
@@ -117,12 +120,12 @@ fun LibraryScreen(
                         val albums = libraryItems.filterIsInstance<AlbumUiModel>()
 
                         if (uiState.isAlbumListLayout) {
-                            AlbumList(albums = albums, listState = listState) { album ->
-                                // Navigation to album details could be added here
+                            AlbumList(albums = albums, listState = listState) { albumId ->
+                                onAlbumClick(albumId)
                             }
                         } else {
-                            AlbumGrid(albums = albums, gridState = gridState) { album ->
-                                // Navigation to album details could be added here
+                            AlbumGrid(albums = albums, gridState = gridState) { albumId ->
+                                onAlbumClick(albumId)
                             }
                         }
 

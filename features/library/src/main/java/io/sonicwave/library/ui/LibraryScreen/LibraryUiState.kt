@@ -1,6 +1,5 @@
-package io.sonicwave.library.ui
+package io.sonicwave.library.ui.LibraryScreen
 
-import android.net.Uri
 import io.sonicwave.library.domain.model.SortOrder
 
 data class LibraryUiState(
@@ -22,8 +21,10 @@ data class TrackUiModel(
     override val id: Long,
     val title: String?,
     val artist: String?,
+    val year: String? = null,
     val album: String?,
     val albumId: Long,
+    val track: Int,
     val duration: String,
     val coverUri: String,
     val isPlaying: Boolean = false,

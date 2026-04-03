@@ -7,7 +7,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
-import io.sonicwave.library.ui.TrackUiModel
+import io.sonicwave.library.ui.LibraryScreen.TrackUiModel
 
 @Composable
 fun TrackGrid(
