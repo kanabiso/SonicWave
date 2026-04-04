@@ -33,5 +33,4 @@ SonicWave is built using modern Android development tools and libraries:
 
 [![Screenshot-2026-04-04-17-48-16-222-io-sonicwave.jpg](https://i.postimg.cc/sf6HHLnK/Screenshot-2026-04-04-17-48-16-222-io-sonicwave.jpg)](https://postimg.cc/bdnRsmf2)
 
-[![Screenshot-2026-04-04-17-53-03-647-io-sonicwave.jpg](https://i.postimg.cc/8cNGy0tk/Screenshot-2026-04-04-17-53-03-647-io-sonicwave.jpg)](https://postimg.cc/WFWxzSBx)
-
+[![Screenshot-2026-04-04-18-01-00-735-io-sonicwave.jpg](https://i.postimg.cc/bwHQWDyZ/Screenshot-2026-04-04-18-01-00-735-io-sonicwave.jpg)](https://postimg.cc/jD2wJjJT)
